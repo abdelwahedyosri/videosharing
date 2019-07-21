@@ -1,0 +1,5 @@
+
+   {% for category in categories %}
+   <a href="{{ path('video_list',{'id' :category.id,'categoryname':category.name})}}" class="p-2 text-dark">{{ category.name}}</a>
+      
+    {% endfor %}  
