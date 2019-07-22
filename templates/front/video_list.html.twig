@@ -1,18 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block main%}
 
-
-
-
-
-
-
 <main role="main">
 
     <section class="jumbotron text-center">
         <div class="container">
 
-            <h1 class="jumbotron-heading">Category - {{category}}</h1>
+            <h1 class="jumbotron-heading">Category {{ category}}</h1>
             <div class="btn-group">
                 <div class="dropdown ml-2">
                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -29,12 +23,12 @@
                 </div>
 
                 <div class="form-row align-items-center ml-3">
-                    <form action="#" method="POST">
+                    <form id="form-sorting" action="#" method="GET">
                         <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" onchange='this.form.submit();'>
                             <option selected>Sort...</option>
-                            <option value="1">Highest rated</option>
-                            <option value="2">Title A-Z</option>
-                            <option value="3">Title Z-A</option>
+                            <option value="rating">Highest rated</option>
+                            <option value="asc">Title A-Z</option>
+                            <option value="desc">Title Z-A</option>
                         </select>
                     </form>
                 </div>
@@ -47,14 +41,20 @@
 
             <div class="row">
              
+               <div class="album py-5 bg-light">
+        <div class="container">
+        
+            <div class="row">
+                {% for video in videos %}
+                
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
                         <div align="center" class="embed-responsive embed-responsive-16by9">
-                            <iframe class="" src="" frameborder="0"
+                            <iframe class="" src="{{video.getPath()}}" frameborder="0"
                                 allowfullscreen></iframe>
                         </div>
                         <div class="card-body">
-                            <h3>Video title</h3>
+                            <h3>{{video.getTitle()}}</h3>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
 
@@ -76,12 +76,13 @@
                                     </button> -->
                                     <a href="{{path('video_details')}}#video_comments">Comments (32)</a>
                                 </div>
-                                <small class="text-muted">9 mins</small>
+                                <small class="text-muted">{{video.getDuration()}} mins</small>
                             </div>
                         </div>
                     </div>
                 </div>
                 
+               {% endfor %}
 
                 <!-- no members -->
                 <div class="col-md-4">
@@ -111,30 +112,18 @@
 
             </div>
         </div>
+        {{knp_pagination_render(videos)}}
     </div>
 
+                
+
+              
+
     <!-- pagination -->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item active"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+   
 
 
 </main>
+
 
 {% endblock %}

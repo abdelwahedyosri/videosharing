@@ -6,6 +6,20 @@ use App\Utils\AbstractClasses\CategoryTreeAbstract;
 
 
 Class CategoryTreeFrontPage extends CategoryTreeAbstract{
+	public function getChildIds(int $parent): array
+    {
+        static $ids = [];
+        foreach($this->categoriesArrayFormDb as $val)
+        {
+            if($val['parent_id'] == $parent)
+            {
+               $ids[] = $val['id'].',';
+               $this->getChildIds($val['id']);
+            }
+        }
+        
+        return $ids;
+    }
 
 	public function getCategoryListAndParent(int $id):string
 	{
