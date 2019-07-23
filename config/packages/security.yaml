@@ -1,7 +1,7 @@
 security:
     encoders:
         App\Entity\User:
-            algorithm: argon2i
+            algorithm: bcrypt
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
@@ -16,20 +16,21 @@ security:
             security: false
         main:
             anonymous: true
-                form_login: true
-                    check_path: login
-                    login_path: login
-                    csrf_token_genrator: security.csrf.token_manager
-                    default_target_path: admin_main_page
-                    username_parameter: _email
-                logout:
-                    path: logout
-                    target: main_page
-                remember_me:
-                    secret: '%kernel.secret%'
-                    lifetime: 604800
-                    path: /
+            form_login:
+                check_path: login
+                login_path: login
+                csrf_token_generator: security.csrf.token_manager
+                default_target_path: admin_main_page
+                username_parameter: _email
+            # https://symfony.com/doc/current/security/form_login_setup.html
+            logout:
+                path: logout
+                target: main_page
 
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+               
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

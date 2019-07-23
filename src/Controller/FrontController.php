@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Utils\AbstractClasses\CategoryTreeFrontPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class FrontController extends AbstractController
 {
@@ -73,14 +74,7 @@ class FrontController extends AbstractController
         return $this->render('front/register.html.twig');
     }
 
-    /**
-     * @Route("/login", name="login")
-     */
-    public function login()
-    {
-        return $this->render('front/login.html.twig');
-    }
-
+    
     /**
      * @Route("/payment", name="payment")
      */
@@ -98,5 +92,24 @@ class FrontController extends AbstractController
             'categories'=>$categories
         ]);
     }
+
+    /**
+     * @Route("/login", name="login")
+     */
+    public function login(AuthenticationUtils $helper)
+    {
+
+        return $this->render('front/login.html.twig',['error'=>$helper->getLastAuthenticationError()]);
+    }
+
+     /**
+     * @Route("/logout", name="logout")
+     */
+    public function logout(AuthenticationUtils $helper)
+    {
+
+        throw new \Exception("This should never be reached");
+    }
+
 }
 
