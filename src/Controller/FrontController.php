@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Video;
+use App\Form\UserType;
 use App\Entity\Category;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Utils\AbstractClasses\CategoryTreeFrontPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class FrontController extends AbstractController
 {
@@ -69,11 +73,42 @@ class FrontController extends AbstractController
     /**
      * @Route("/register", name="register")
      */
-    public function register()
+    public function register(Request $request,UserPasswordEncoderInterface $encoder,ObjectManager $manager)
     {
-        return $this->render('front/register.html.twig');
-    }
+        $user =new User();
+        $form=$this->createForm(UserType::class,$user);
+        $form->handleRequest($request);
+        if ( $form->isSubmitted() &&  $form->isValid() ){
+            $user->setName($request->request->get('user')['name'])
+            ->setLastname($reuqest->request->get('user')['lastname'])
+            ->setEmail($request->request->get('user')['email'])
+            ->setPassword($encoder->encode($user,$request->request->get('user')['password']['first']))
+            ->setRoles(['ROLE_USER']);
+            $manager->persist($user);
+            $manager->flush();
+            $this->loginUserAutpmatically($user,$password);
 
+            return $this->redirectToRoute('admin_main_page');
+        }
+
+        return $this->render('front/register.html.twig',[
+            
+            'form'=>$form->createView()
+            
+            
+            ]);
+    }
+    private function LoginUserAutomatically($user,$password){
+
+        $user=new UserPasswordToken(
+
+
+            $user,
+            $password,
+            'main',
+            $user->getRoles()
+        );
+    }
     
     /**
      * @Route("/payment", name="payment")
