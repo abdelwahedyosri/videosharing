@@ -9,17 +9,16 @@ use App\Utils\AbstractClasses\CategoryTreeAdminList;
 use  App\Utils\AbstractClasses\CategoryTreeAdminOptionList;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\CategoryType;
-
-
-
-
 use App\Entity\Category;
 
+/**
+     * @Route("/admin")
+     */
 
 class AdminController extends AbstractController
 {
     /**
-     * @Route("/admin", name="admin_main_page")
+     * @Route("/", name="admin_main_page")
      */
     public function index()
     {
@@ -27,7 +26,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/categories", name="categories",methods={"GET","POST"})
+     * @Route("/su/categories", name="categories",methods={"GET","POST"})
      */
     public function categories(CategoryTreeAdminList $categories,Request $request)
     
@@ -86,7 +85,7 @@ class AdminController extends AbstractController
     }
 
      /**
-     * @Route("/edit_category/{id}", name="edit_category")
+     * @Route("/su/edit_category/{id}", name="edit_category")
      */
     public function edit_category(Category $editedcategory)
     {
@@ -95,7 +94,7 @@ class AdminController extends AbstractController
             'editedcategory'=>$editedcategory]);
     }
       /**
-     * @Route("/delete_category/{id}", name="delete_category")
+     * @Route("/su/delete_category/{id}", name="delete_category")
      */   
     public function deleteCategory(Category $category)
     {
