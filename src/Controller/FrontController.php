@@ -13,6 +13,7 @@ use App\Utils\AbstractClasses\CategoryTreeFrontPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class FrontController extends AbstractController
 {
@@ -79,14 +80,15 @@ class FrontController extends AbstractController
         $form=$this->createForm(UserType::class,$user);
         $form->handleRequest($request);
         if ( $form->isSubmitted() &&  $form->isValid() ){
+            $password=$encoder->encodePassword($user,$request->request->get('user')['password']['first']);
             $user->setName($request->request->get('user')['name'])
-            ->setLastname($reuqest->request->get('user')['lastname'])
+            ->setLastname($request->request->get('user')['lastname'])
             ->setEmail($request->request->get('user')['email'])
-            ->setPassword($encoder->encode($user,$request->request->get('user')['password']['first']))
+            ->setPassword($encoder->encodePassword($user,$request->request->get('user')['password']['first']))
             ->setRoles(['ROLE_USER']);
             $manager->persist($user);
             $manager->flush();
-            $this->loginUserAutpmatically($user,$password);
+            $this->loginUserAutomatically($user,$password);
 
             return $this->redirectToRoute('admin_main_page');
         }
@@ -98,16 +100,16 @@ class FrontController extends AbstractController
             
             ]);
     }
-    private function LoginUserAutomatically($user,$password){
-
-        $user=new UserPasswordToken(
-
-
+    private function loginUserAutomatically($user, $password)
+    {
+        $token = new UsernamePasswordToken(
             $user,
             $password,
-            'main',
+            'main', // security.yaml
             $user->getRoles()
         );
+        $this->get('security.token_storage')->setToken($token);
+        $this->get('session')->set('_security_main',serialize($token));
     }
     
     /**
